@@ -27,7 +27,8 @@ data "aws_availability_zones" "available_zones" {}
 #create the public subnets in each availability zone
 
 resource "aws_subnet" "public_subnets" {
-  count = length(data.aws_availability_zones.available_zones.names)
+  #count = length(data.aws_availability_zones.available_zones.names)
+  count = length(var.public_subnet_cidr)
 
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = var.public_subnet_cidr[count.index]
@@ -59,7 +60,8 @@ tags = {
 #associate the public subnets with the route table
 
 resource "aws_route_table_association" "public_subnet_route_table_association" {
-  count = length(data.aws_availability_zones.available_zones.names)
+  #count = length(data.aws_availability_zones.available_zones.names)
+  count = length(var.public_subnet_cidr)
 
   subnet_id      = aws_subnet.public_subnets[count.index].id
   route_table_id = aws_route_table.public_route_table.id
@@ -68,7 +70,9 @@ resource "aws_route_table_association" "public_subnet_route_table_association" {
 #craete the private subnets in each availability zone
 
 resource "aws_subnet" "private_subnets" {
-  count = length(data.aws_availability_zones.available_zones.names)
+  #count = length(data.aws_availability_zones.available_zones.names)
+    count = length(var.private_subnet_cidr)
+
 
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = var.private_subnet_cidr[count.index]
@@ -126,7 +130,9 @@ resource "aws_main_route_table_association" "aws_main_route_table" {
 
 #associate private subnet 1 with "private route table"
 resource "aws_route_table_association" "private_subnet_1_route_table_association" {
-  count          = length(data.aws_availability_zones.available_zones.names)
+  
+  #count          = length(data.aws_availability_zones.available_zones.names)
+    count = length(var.private_subnet_cidr)
   subnet_id      = aws_subnet.private_subnets[count.index].id
   route_table_id = aws_route_table.private_route_table.id
 }
