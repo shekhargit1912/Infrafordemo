@@ -13,3 +13,24 @@ module "vpc" {
   tags_private_subnet = var.tags_private_subnet
   index               = random_integer.random_index.result
 }
+
+module "ekscluster" {
+  source                    = "./modules/eks"
+  project_name              = var.project_name
+  eks_version               = var.eks_version
+  vpc_id                    = module.vpc.vpc_id
+  private_subnet_ids        = module.vpc.private_subnet_ids
+  node_max_unavailable      = var.node_max_unavailable
+  vpc_ip                    = module.vpc.vpc_ip
+  cluster_names             = var.cluster_names
+  mobile_node_desired_size  = var.mobile_node_desired_size
+  mobile_node_max_size      = var.mobile_node_max_size
+  mobile_node_min_size      = var.mobile_node_min_size
+  website_node_desired_size = var.website_node_desired_size
+  website_node_max_size     = var.website_node_max_size
+  website_node_min_size     = var.website_node_min_size
+  mobile_ami                = var.mobile_ami
+  mobile_node_type          = var.mobile_node_type
+  website_ami               = var.website_ami
+  website_node_type         = var.website_node_type
+}
